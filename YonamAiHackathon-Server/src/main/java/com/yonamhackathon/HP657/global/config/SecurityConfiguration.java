@@ -35,20 +35,19 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(
-                        authorizeRequests -> authorizeRequests
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers(ApiPath.H2_PATH + "/**").permitAll()
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/", ApiPath.H2_PATH + "/**").permitAll()
                                 .requestMatchers(ApiPath.USER_API_PATH + "/login", ApiPath.USER_API_PATH + "/register").anonymous()
                                 .requestMatchers(ApiPath.ADMIN_API_PATH + "/**").hasRole(Role.ADMIN.name())
-                                .anyRequest().permitAll()
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
-
 }
