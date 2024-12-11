@@ -2,23 +2,29 @@ package com.yonamhackathon.HP657.global.utility;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Date;
+
+
 
 @Component
 public class JwtUtil {
     @Value("${jwt.secret}")
     private String JWT_SECRET;
 
+
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1H
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
+                .subject(email)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(getKey(), Jwts.SIG.HS256)
                 .compact();
     }
 
@@ -33,9 +39,10 @@ public class JwtUtil {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(JWT_SECRET)
-                .parseClaimsJws(token)
-                .getBody();
+                .verifyWith(getKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     public boolean isTokenExpired(String token) {
@@ -48,5 +55,9 @@ public class JwtUtil {
 
     public boolean validateToken(String token, String email) {
         return (email.equals(extractEmail(token)) && !isTokenExpired(token));
+    }
+
+    public SecretKey getKey() {
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(JWT_SECRET));
     }
 }
