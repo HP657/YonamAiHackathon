@@ -3,6 +3,9 @@ package com.yonamhackathon.HP657.domain.user.controller;
 import com.yonamhackathon.HP657.domain.jwt.dto.RequestCreateJwtDto;
 import com.yonamhackathon.HP657.domain.jwt.dto.ResponseCreateJwtDto;
 import com.yonamhackathon.HP657.domain.jwt.service.JwtService;
+import com.yonamhackathon.HP657.domain.mail.dto.RequestSendEmailDto;
+import com.yonamhackathon.HP657.domain.mail.dto.RequestVerificationCodeDto;
+import com.yonamhackathon.HP657.domain.mail.service.MailService;
 import com.yonamhackathon.HP657.domain.user.dto.RequestRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(ApiPath.USER_API_PATH)
 public class UserController extends DefaultController {
     private final UserService userService;
+    private final MailService mailService;
     private final JwtService jwtService;
 
     @PostMapping("/register")
@@ -39,5 +43,20 @@ public class UserController extends DefaultController {
         SuccessResponse<ResponseCreateJwtDto> response = new SuccessResponse<>(dto);
 
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/email/send")
+    public ResponseEntity<String> sendEmail(@Valid @RequestBody RequestSendEmailDto sendEmailDto) {
+        mailService.sendEmail(sendEmailDto);
+        return new ResponseEntity<>("이메일 인증 메일 전송", createHttpHeaders(), HttpStatus.OK);
+    }
+
+    @PostMapping("/email/verification")
+    public ResponseEntity<String> verification(@RequestBody RequestVerificationCodeDto verificationCodeDto) {
+        boolean response = mailService.verifyCode(verificationCodeDto);
+        if (response) {
+            return new ResponseEntity<>("이메일 인증 완료", createHttpHeaders(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>("이메일 인증 실패", createHttpHeaders(), HttpStatus.UNAUTHORIZED);
     }
 }
