@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -31,7 +33,7 @@ public class MailService {
         try {
             sendHtmlEmail(dto.getEmail(), emailContent);
             saveVerificationCode(dto.getEmail(), verificationCode);
-        } catch (MessagingException e) {
+        } catch (RuntimeException e) {
             throw new RuntimeException("이메일 전송 중 오류 발생: " + e.getMessage(), e);
         }
     }
@@ -50,14 +52,19 @@ public class MailService {
                 """.formatted(verificationCode);
     }
 
-    private void sendHtmlEmail(String toEmail, String content) throws MessagingException {
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
-        helper.setTo(toEmail);
-        helper.setSubject("이메일 인증 번호");
-        helper.setText(content, true);
+    private void sendHtmlEmail(String toEmail, String content)  {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
+            helper.setFrom("junlee5070@gmail.com", "BondLink");
+            helper.setTo(toEmail);
+            helper.setSubject("이메일 인증 번호");
+            helper.setText(content, true);
 
-        javaMailSender.send(mimeMessage);
+            javaMailSender.send(mimeMessage);
+        }catch (UnsupportedEncodingException | MessagingException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveVerificationCode(String email, String code) {
