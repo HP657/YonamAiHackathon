@@ -52,7 +52,7 @@ public class UserController extends DefaultController {
     }
 
     @PostMapping("/email/verification")
-    public ResponseEntity<String> verification(@RequestBody RequestVerificationCodeDto verificationCodeDto) {
+    public ResponseEntity<String> verification(@Valid @RequestBody RequestVerificationCodeDto verificationCodeDto) {
         boolean response = mailService.verifyCode(verificationCodeDto);
         if (response) {
             return new ResponseEntity<>("이메일 인증 완료", createHttpHeaders(), HttpStatus.OK);

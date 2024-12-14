@@ -16,11 +16,14 @@ public class RequestRegisterUserDto {
 
     private String password;
 
+    private int studentId;
+
     public User toEntity() {
         return User.builder()
                 .email(email)
                 .username(username)
                 .password(password)
+                .studentId(studentId)
                 .build();
     }
 }
