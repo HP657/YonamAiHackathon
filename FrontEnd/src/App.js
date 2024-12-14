@@ -8,6 +8,8 @@ import { useEffect, useState } from 'react';
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  // eslint-disable-next-line no-unused-vars
+  const [userInfo, setUserInfo] = useState(1);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,11 +38,11 @@ export default function App() {
           <div className='flex-1 aspect-[10/16] overflow-hidden flex flex-col'>
             {isIntroComplete ? (
               <>
-                <Header />
+                {userInfo && <Header />}
                 <main className='flex-1 overflow-y-auto p-4 no-scrollbar'>
-                  <Contents />
+                  <Contents user={userInfo} />
                 </main>
-                <Footer />
+                {userInfo && <Footer />}
               </>
             ) : (
               <Intro onFadeComplete={() => setIsIntroComplete(true)} />
