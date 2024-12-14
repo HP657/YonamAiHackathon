@@ -18,7 +18,7 @@ public class VerificationCode {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long emailId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
