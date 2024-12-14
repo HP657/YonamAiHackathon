@@ -40,7 +40,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", ApiPath.H2_PATH + "/**").permitAll()
-                                .requestMatchers(ApiPath.USER_API_PATH + "/login", ApiPath.USER_API_PATH + "/register").anonymous()
+                                .requestMatchers(ApiPath.USER_API_PATH + "/login", ApiPath.USER_API_PATH + "/register", ApiPath.USER_API_PATH + "/email/**").anonymous()
                                 .requestMatchers(ApiPath.ADMIN_API_PATH + "/**").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 )
