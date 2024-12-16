@@ -11,6 +11,7 @@ public class ApiPath {
     public static final String USER_API_PATH = BASE_PATH + "/user";
     public static final String JWT_API_PATH = BASE_PATH + "/token";
     public static final String ADMIN_API_PATH = BASE_PATH + "/admin";
+    public static final String AI_API_ATH = BASE_PATH + "/ai";
 
 
     public static String H2_PATH;
