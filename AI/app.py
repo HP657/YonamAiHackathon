@@ -1,4 +1,11 @@
+import uvicorn
 from models.emotion_analyzer import EmotionAnalyzer
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+# 요청 데이터 모델 정의
+class EmotionRequest(BaseModel):
+    sentence: str
 
 # 감정 분석기 초기화
 analyzer = EmotionAnalyzer(
@@ -6,11 +13,31 @@ analyzer = EmotionAnalyzer(
     svm_model_path="model/svm_model.joblib"
 )
 
-# 입력 문장
-sentence = "지금 하고 있는 프로젝트가 내 실수 때문에 무산될까 봐 불안해"
+# FastAPI 앱 초기화
+app = FastAPI()
 
-# 감정 분석 실행
-result = analyzer.analyze_emotion(sentence)
 
-# 결과 출력
-print(result)
+@app.post("/api/analyze_emotion")
+async def analyze_emotion(request: EmotionRequest):
+    try:
+        # 문장 분석
+        sentence = request.sentence
+        score, emotion = analyzer.analyze_emotion(sentence) 
+        
+        # 응답 반환
+        return {
+            "status": 200,
+            "data": {
+                "sentence": sentence,
+                "emotion": emotion,  
+                "score": score       
+            }
+        }
+    except Exception as e:
+        return {
+            "status": 500,
+            "data": str(e)
+        }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

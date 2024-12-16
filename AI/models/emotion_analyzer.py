@@ -13,14 +13,13 @@ class EmotionAnalyzer:
         self.model = load(word_model_path)  # Word2Vec 모델 로드
         self.svm_model = load(svm_model_path)  # SVM 모델 로드
 
-        # 감정 숫자를 점수 및 감정 이름으로 변환하는 매핑
         self.emotion_mapping = {
-            0: {"score": 4.5, "name": "기쁨"},
-            3: {"score": 2.0, "name": "슬픔"},
-            2: {"score": 2.0, "name": "불안"},
-            4: {"score": 1.5, "name": "상처"},
-            1: {"score": 1.0, "name": "당황"},
-            5: {"score": 1.0, "name": "분노"}
+            0: ("기쁨", 4.5),  # 기쁨
+            3: ("슬픔", 2.0),  # 슬픔
+            2: ("불안", 1.5),  # 불안
+            4: ("상처", 1.5),  # 상처
+            1: ("당황", 1.0),  # 당황
+            5: ("분노", 1.0)   # 분노
         }
 
     def tokenize(self, text: str):
@@ -43,26 +42,20 @@ class EmotionAnalyzer:
         if embeddings:
             return sum(embeddings) / len(embeddings)
         else:
-            # 모델 벡터 차원 크기만큼 0으로 채운 리스트 반환
             return [0] * self.model.vector_size
 
     def analyze_emotion(self, sentence: str):
         """
         문장에서 감정을 분석
         :param sentence: 입력 문장
-        :return: 감정 점수, 감정 번호, 감정 이름, 입력 문장
+        :return: 감정 점수와 감정 이름
         """
         tokenized_sentence = self.tokenize(sentence)
         embedding = self.get_embedding(tokenized_sentence)
         emotion = self.svm_model.predict([embedding])[0]
-
-        emotion_data = self.emotion_mapping[emotion]
-        score = emotion_data["score"]
-        emotion_name = emotion_data["name"]
-
-        return {
-            "input": sentence,
-            "score": score,
-            "emotion_id": emotion,
-            "emotion_name": emotion_name
-        }
+        
+        
+        
+        # 감정 이름과 점수 반환
+        emotion_name, score = self.emotion_mapping[emotion]
+        return score, emotion_name
