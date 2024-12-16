@@ -6,6 +6,7 @@ import com.yonamhackathon.HP657.domain.jwt.service.JwtService;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestSendEmailDto;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestVerificationCodeDto;
 import com.yonamhackathon.HP657.domain.mail.service.MailService;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseGpaDto;
 import com.yonamhackathon.HP657.domain.user.dto.RequestRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
@@ -16,10 +17,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +27,13 @@ public class UserController extends DefaultController {
     private final MailService mailService;
     private final JwtService jwtService;
 
+    @GetMapping("/gpa")
+    public ResponseEntity<SuccessResponse<ResponseGpaDto>> getUserGpa(@RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        ResponseGpaDto dto = userService.getUserGpa(token);
+        SuccessResponse<ResponseGpaDto> response = new SuccessResponse<>(dto);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+    }
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse<ResponseRegisterUserDto>> registerUser(@Valid @RequestBody RequestRegisterUserDto registerUserDto) {
         ResponseRegisterUserDto dto = userService.save(registerUserDto.toEntity());
