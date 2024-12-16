@@ -26,17 +26,14 @@ async def analyze_emotion(request: EmotionRequest):
         
         # 응답 반환
         return {
-            "status": 200,
-            "data": {
                 "sentence": sentence,
                 "emotion": emotion,  
                 "score": score       
             }
-        }
+
     except Exception as e:
         return {
-            "status": 500,
-            "data": str(e)
+            "error": str(e)
         }
 
 if __name__ == "__main__":
