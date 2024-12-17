@@ -3,7 +3,6 @@ package com.yonamhackathon.HP657.domain.AI.controller;
 import com.yonamhackathon.HP657.domain.AI.dto.RequestEmotionDto;
 import com.yonamhackathon.HP657.domain.AI.dto.ResponseEmotionDto;
 import com.yonamhackathon.HP657.domain.AI.service.AIService;
-import com.yonamhackathon.HP657.domain.jwt.dto.ResponseCreateJwtDto;
 import com.yonamhackathon.HP657.global.common.ApiPath;
 import com.yonamhackathon.HP657.global.common.DefaultController;
 import com.yonamhackathon.HP657.global.common.SuccessResponse;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(ApiPath.AI_API_ATH)
+@RequestMapping(ApiPath.AI_API_PATH)
 public class AIController extends DefaultController {
 
     private final AIService aiService;
