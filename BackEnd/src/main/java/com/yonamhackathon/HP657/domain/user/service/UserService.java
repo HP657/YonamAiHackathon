@@ -1,11 +1,12 @@
 package com.yonamhackathon.HP657.domain.user.service;
 
-import com.yonamhackathon.HP657.domain.user.dto.ResponseGpaDto;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseGradeDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
-import com.yonamhackathon.HP657.domain.user.entity.Gpa;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
+import com.yonamhackathon.HP657.domain.user.entity.Grade;
 import com.yonamhackathon.HP657.domain.user.entity.Role;
 import com.yonamhackathon.HP657.domain.user.entity.User;
-import com.yonamhackathon.HP657.domain.user.repository.GpaRepository;
+import com.yonamhackathon.HP657.domain.user.repository.GradeRepository;
 import com.yonamhackathon.HP657.domain.user.repository.UserRepository;
 import com.yonamhackathon.HP657.global.exception.CustomException;
 import com.yonamhackathon.HP657.global.exception.ErrorCode;
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final GpaRepository gpaRepository;
+    private final GradeRepository gpaRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -34,11 +35,11 @@ public class UserService {
 
         User createdUser = userRepository.save(user);
 
-        Gpa userGpa = new Gpa();
+        Grade userGpa = new Grade();
         userGpa.setEmail(createdUser.getEmail());
-        userGpa.setGpa(3.5);
+        userGpa.setGrade(3.5);
         userGpa.setCount(1);
-        gpaRepository.save(userGpa);
+
 
         return ResponseRegisterUserDto.builder()
                 .userId(createdUser.getUserId())
@@ -46,19 +47,39 @@ public class UserService {
                 .build();
     }
 
-    public ResponseGpaDto getUserGpa(String token) {
+
+
+    public ResponseGradeDto getUserGpa(String token) {
         String userEmail = jwtUtil.extractEmail(token);
 
-        Optional<Gpa> optionalGpa = gpaRepository.findByEmail(userEmail);
+        Optional<Grade> optionalGpa = gpaRepository.findByEmail(userEmail);
 
         if (optionalGpa.isPresent()) {
-            Gpa gpa = optionalGpa.get();
-            ResponseGpaDto responseGpaDto = new ResponseGpaDto();
-            responseGpaDto.setGpa(gpa.getGpa());
+            Grade gpa = optionalGpa.get();
+            ResponseGradeDto responseGpaDto = new ResponseGradeDto();
+            responseGpaDto.setGrade(gpa.getGrade());
             responseGpaDto.setCount(gpa.getCount());
             return responseGpaDto;
         } else {
             throw new RuntimeException("GPA not found for user: " + userEmail);
+        }
+    }
+
+    public User getUser(String token) {
+        String userEmail = jwtUtil.extractEmail(token);
+        return userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+    }
+
+    public ResponseUserInfoDto getUserInfo(String token) {
+        String userEmail = jwtUtil.extractEmail(token);
+
+        Optional<User> optionalUser = userRepository.findByEmail(userEmail);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            return ResponseUserInfoDto.fromEntity(user);
+        } else {
+            throw new RuntimeException("User not found");
         }
     }
 

@@ -6,9 +6,10 @@ import com.yonamhackathon.HP657.domain.jwt.service.JwtService;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestSendEmailDto;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestVerificationCodeDto;
 import com.yonamhackathon.HP657.domain.mail.service.MailService;
-import com.yonamhackathon.HP657.domain.user.dto.ResponseGpaDto;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseGradeDto;
 import com.yonamhackathon.HP657.domain.user.dto.RequestRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
 import com.yonamhackathon.HP657.global.common.ApiPath;
 import com.yonamhackathon.HP657.global.common.DefaultController;
@@ -28,10 +29,10 @@ public class UserController extends DefaultController {
     private final JwtService jwtService;
 
     @GetMapping("/gpa")
-    public ResponseEntity<SuccessResponse<ResponseGpaDto>> getUserGpa(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<ResponseGradeDto>> getUserGpa(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        ResponseGpaDto dto = userService.getUserGpa(token);
-        SuccessResponse<ResponseGpaDto> response = new SuccessResponse<>(dto);
+        ResponseGradeDto dto = userService.getUserGpa(token);
+        SuccessResponse<ResponseGradeDto> response = new SuccessResponse<>(dto);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
     @PostMapping("/register")
@@ -47,6 +48,13 @@ public class UserController extends DefaultController {
         ResponseCreateJwtDto dto = jwtService.createJwt(createJwtDto);
         SuccessResponse<ResponseCreateJwtDto> response = new SuccessResponse<>(dto);
 
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<SuccessResponse<ResponseUserInfoDto>> getUserInfo(@Valid @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        SuccessResponse<ResponseUserInfoDto> response = new SuccessResponse<>(userService.getUserInfo(token));
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
