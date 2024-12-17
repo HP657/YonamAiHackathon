@@ -7,7 +7,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class ResponseGpaDto {
-    private Double gpa;
+public class ResponseGradeDto {
+    private Double grade;
     private long count;
 }

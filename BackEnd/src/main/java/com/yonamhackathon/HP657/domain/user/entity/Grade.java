@@ -3,6 +3,7 @@ package com.yonamhackathon.HP657.domain.user.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,15 +14,16 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Gpa {
+public class Grade {
     @Id
     private String email;
 
     @Column(nullable = false)
-    private Double gpa;
+    private Double grade;
 
     @Column
     private long count;
 
-
+    @OneToOne(mappedBy = "grade")
+    private User user;
 }
