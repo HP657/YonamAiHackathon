@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 export default function MainPage() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
       navigate('/login');
     }
   }, []);

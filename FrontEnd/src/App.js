@@ -4,14 +4,25 @@ import Header from './components/Header';
 import Contents from './components/Contents';
 import Intro from './components/Intro';
 import { useEffect, useState } from 'react';
+import API from './services/api';
 
 export default function App() {
   const [isIntroComplete, setIsIntroComplete] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  // eslint-disable-next-line no-unused-vars
-  const [userInfo, setUserInfo] = useState(1);
+  const [userInfo, setUserInfo] = useState(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await API('/api/token/check', 'GET', null, true);
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error('API 호출 중 에러 발생:', error);
+        setUserInfo(false);
+      }
+    };
+
+    fetchData();
     const timer = setTimeout(() => {
       setIsIntroComplete(true);
     }, 3000);

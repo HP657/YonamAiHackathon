@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
+import PropTypes from 'prop-types';
 
-export default function RegisterPage() {
+export default function RegisterPage({ user }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -13,6 +14,12 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, []);
 
   const handleEmailVerification = async () => {
     if (!email) {
@@ -73,7 +80,8 @@ export default function RegisterPage() {
 
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
-      setError('유효한 이메일을 입력해주세요.');
+      if (!email.endsWith('@st.yc.ac.kr'))
+        setError('유효한 이메일을 입력해주세요.');
       return;
     }
 
@@ -121,7 +129,7 @@ export default function RegisterPage() {
                   isVerified ? 'bg-gray-300' : ''
                 }`}
                 value={email}
-                placeholder='email@yc.ac.kr'
+                placeholder='email@st.yc.ac.kr'
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isVerified}
               />
@@ -249,3 +257,7 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+RegisterPage.propTypes = {
+  user: PropTypes.bool.isRequired,
+};

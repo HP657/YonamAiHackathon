@@ -8,9 +8,10 @@ export default function Header() {
       <button
         onClick={() => navigate('/')}
         aria-label='Go to Home'
-        className='bg-transparent border-none p-0 cursor-pointer'
+        className='bg-transparent border-none p-0 cursor-pointer flex items-center'
       >
         <img src='/assets/logo.png' alt='Logo' className='h-10' />
+        <h1 className='font-bold text-2xl ml-3'>BondLink</h1>
       </button>
 
       <button

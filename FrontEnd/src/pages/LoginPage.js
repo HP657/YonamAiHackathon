@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import API from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-export default function LoginPage() {
+export default function LoginPage({ user }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +35,7 @@ export default function LoginPage() {
     setError('');
     const response = await API('/api/user/login', 'POST', loginFormData, false);
     console.log(response.data.data.token);
+    localStorage.removeItem('accessToken');
     localStorage.setItem('accessToken', response.data.data.token);
     navigate('/');
   };
@@ -79,3 +87,7 @@ export default function LoginPage() {
     </div>
   );
 }
+
+LoginPage.propTypes = {
+  user: PropTypes.bool.isRequired,
+};
