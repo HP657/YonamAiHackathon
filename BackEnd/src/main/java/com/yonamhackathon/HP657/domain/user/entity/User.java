@@ -1,5 +1,7 @@
 package com.yonamhackathon.HP657.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -18,8 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
+
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
     @Column(nullable = false, unique = true)
@@ -38,6 +41,14 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToMany(mappedBy = "users")
+    @JsonIgnore
+    private List<Room> rooms;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false) // email을 중복 매핑하지 않도록 설정
+    private Grade grade;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
