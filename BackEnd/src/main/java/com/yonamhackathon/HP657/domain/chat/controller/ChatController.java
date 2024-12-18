@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping(ApiPath.WS_API_PATH)
+@RequestMapping(ApiPath.CHAT_API_PATH)
 public class ChatController extends DefaultController {
 
     @MessageMapping("/sendMessage/{roomId}")

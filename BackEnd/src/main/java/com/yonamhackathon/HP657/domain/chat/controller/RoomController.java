@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(ApiPath.CHAT_API_PATH)
+@RequestMapping(ApiPath.ROOM_API_PATH)
 public class RoomController extends DefaultController {
 
     private final RoomService roomService;
