@@ -31,7 +31,7 @@ public class UserController extends DefaultController {
     @GetMapping("/grade")
     public ResponseEntity<SuccessResponse<ResponseGradeDto>> getUserGpa(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        ResponseGradeDto dto = userService.getUserGpa(token);
+        ResponseGradeDto dto = userService.getUserGrade(token);
         SuccessResponse<ResponseGradeDto> response = new SuccessResponse<>(dto);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }

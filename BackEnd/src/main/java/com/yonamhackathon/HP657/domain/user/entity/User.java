@@ -2,6 +2,7 @@ package com.yonamhackathon.HP657.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yonamhackathon.HP657.domain.chat.entity.Room;
+import com.yonamhackathon.HP657.domain.post.entity.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -46,8 +47,12 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Room> rooms;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Post> posts;
+
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false) // email을 중복 매핑하지 않도록 설정
+    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
     private Grade grade;
 
     @Override

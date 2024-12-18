@@ -35,12 +35,6 @@ public class UserService {
 
         User createdUser = userRepository.save(user);
 
-        Grade userGpa = new Grade();
-        userGpa.setEmail(createdUser.getEmail());
-        userGpa.setGrade(3.5);
-        userGpa.setCount(1);
-
-
         return ResponseRegisterUserDto.builder()
                 .userId(createdUser.getUserId())
                 .email(createdUser.getEmail())
@@ -49,7 +43,7 @@ public class UserService {
 
 
 
-    public ResponseGradeDto getUserGpa(String token) {
+    public ResponseGradeDto getUserGrade(String token) {
         String userEmail = jwtUtil.extractEmail(token);
 
         Optional<Grade> optionalGpa = gpaRepository.findByEmail(userEmail);
