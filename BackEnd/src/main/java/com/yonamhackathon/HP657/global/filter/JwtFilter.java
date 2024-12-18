@@ -4,6 +4,7 @@ import com.yonamhackathon.HP657.domain.user.entity.User;
 import com.yonamhackathon.HP657.domain.user.repository.UserRepository;
 import com.yonamhackathon.HP657.global.exception.CustomException;
 import com.yonamhackathon.HP657.global.exception.ErrorCode;
+import com.yonamhackathon.HP657.global.exception.ErrorResponseEntity;
 import com.yonamhackathon.HP657.global.utility.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -28,33 +29,49 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String authorizationHeader = request.getHeader("Authorization");
-
-        String email = null;
-        String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            email = jwtUtil.extractEmail(jwt);
+        try {
+            String jwt = extractJwtFromRequest(request);
+            if (jwt != null) {
+                String email = jwtUtil.extractEmail(jwt);
+                authenticateUser(jwt, email, request);
+            }
+            chain.doFilter(request, response);
+        } catch (CustomException e) {
+            handleCustomException(response, e);
         }
+    }
 
+    private String extractJwtFromRequest(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
+    }
+
+    private void authenticateUser(String jwt, String email, HttpServletRequest request) {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            try {
-                if (jwtUtil.validateToken(jwt, email)) {
-                    User user = userRepository.findByEmail(email)
-                            .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            email, null, user.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (ExpiredJwtException e) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write(ErrorCode.JWT_EXPIRATION.getMessage());
-                return;
+            if (jwtUtil.validateToken(jwt, email)) {
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        email, null, user.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                throw new CustomException(ErrorCode.UNAUTHORIZED);
             }
         }
+    }
 
-        chain.doFilter(request, response);
+    private void handleCustomException(HttpServletResponse response, CustomException e) throws IOException {
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(e.getErrorCode().getStatus().value())
+                .name(e.getErrorCode().name())
+                .message(e.getErrorCode().getMessage())
+                .build();
+        response.setStatus(e.getErrorCode().getStatus().value());
+        response.setContentType("application/json");
+        response.getWriter().write(errorResponse.toString());
     }
 }
