@@ -14,7 +14,7 @@ public class ApiPath {
     public static final String AI_API_PATH = BASE_PATH + "/ai";
     public static final String CHAT_API_PATH = BASE_PATH + "/chat";
     public static final String ROOM_API_PATH = BASE_PATH + "/room";
-    public static final String WS_API_PATH = BASE_PATH + "/ws";
+    public static final String POST_API_PATH = BASE_PATH + "/post";
 
     public static String H2_PATH;
 
