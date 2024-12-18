@@ -28,7 +28,7 @@ public class UserController extends DefaultController {
     private final MailService mailService;
     private final JwtService jwtService;
 
-    @GetMapping("/gpa")
+    @GetMapping("/grade")
     public ResponseEntity<SuccessResponse<ResponseGradeDto>> getUserGpa(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
         ResponseGradeDto dto = userService.getUserGpa(token);
