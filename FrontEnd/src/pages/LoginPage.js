@@ -9,35 +9,53 @@ export default function LoginPage({ user }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  // 사용자가 이미 로그인되어 있으면 메인 페이지로 리다이렉션
   useEffect(() => {
     if (user) {
       navigate('/');
     }
-  }, []);
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 이메일과 비밀번호가 비어있는지 체크
     if (!email || !password) {
       setError('이메일과 비밀번호를 모두 입력해주세요.');
       return;
     }
 
+    // 이메일 유효성 검사
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
       setError('유효한 이메일 주소를 입력해주세요.');
       return;
     }
-    const loginFormData = {
-      email,
-      password,
-    };
-    setError('');
-    const response = await API('/api/user/login', 'POST', loginFormData, false);
-    console.log(response.data.data.token);
-    localStorage.removeItem('accessToken');
-    localStorage.setItem('accessToken', response.data.data.token);
-    navigate('/');
+
+    const loginFormData = { email, password };
+    setError(''); // 로그인 시도 전 에러 메시지 초기화
+
+    try {
+      // API를 통해 로그인 시도
+      const response = await API(
+        '/api/user/login',
+        'POST',
+        loginFormData,
+        false
+      );
+
+      // 로그인 성공 시 토큰을 로컬 스토리지에 저장
+      const token = response?.data?.data?.token;
+      if (token) {
+        localStorage.setItem('accessToken', token);
+        navigate('/');
+      } else {
+        setError('로그인 실패: 토큰을 받지 못했습니다.');
+      }
+    } catch (error) {
+      console.error('로그인 중 오류가 발생했습니다:', error);
+      setError('로그인 실패: 잘못된 이메일 또는 비밀번호입니다.');
+    }
   };
 
   return (
@@ -74,6 +92,7 @@ export default function LoginPage({ user }) {
             />
           </div>
 
+          {/* 에러 메시지가 있을 경우 표시 */}
           {error && <p className='text-red-500 text-sm mb-4'>{error}</p>}
 
           <button
@@ -89,5 +108,5 @@ export default function LoginPage({ user }) {
 }
 
 LoginPage.propTypes = {
-  user: PropTypes.bool.isRequired,
+  user: PropTypes.bool.isRequired, // user prop이 boolean 값이어야 함
 };
