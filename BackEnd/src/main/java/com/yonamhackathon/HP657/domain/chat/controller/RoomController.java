@@ -6,8 +6,10 @@ import com.yonamhackathon.HP657.domain.chat.service.RoomService;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.global.common.ApiPath;
 import com.yonamhackathon.HP657.global.common.DefaultController;
+import com.yonamhackathon.HP657.global.common.SuccessResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,35 +23,43 @@ public class RoomController extends DefaultController {
 
     // 모든 채팅방 가져오기
     @GetMapping("/all")
-    public List<Room> getRooms() {
-        return roomService.getAllRooms();
+    public ResponseEntity<SuccessResponse<List<Room>>> getRooms() {
+        List<Room> rooms = roomService.getAllRooms();
+        SuccessResponse<List<Room>> response = new SuccessResponse<>(rooms);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
     // 유저가 가입한 채팅방 가져오기
     @GetMapping("/user/rooms")
-    public List<Room> getUserRooms(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<List<Room>>> getUserRooms(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        return roomService.getUserRooms(token);
+        List<Room> userRooms = roomService.getUserRooms(token);
+        SuccessResponse<List<Room>> response = new SuccessResponse<>(userRooms);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
     // 채팅방 생성
     @PostMapping("/create")
-    public Room createRoom(@RequestBody RequestCreateRoomDto dto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<Room>> createRoom(@RequestBody RequestCreateRoomDto dto, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        return roomService.createRoom(dto, token);
+        Room room = roomService.createRoom(dto, token);
+        SuccessResponse<Room> response = new SuccessResponse<>(room);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
     // 채팅방에 유저 가입
     @PostMapping("/{roomId}/join")
-    public void joinRoom(@PathVariable Long roomId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<String>> joinRoom(@PathVariable Long roomId, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        roomService.joinRoom(token, roomId);
+        SuccessResponse<String> response = new SuccessResponse<>(roomService.joinRoom(token, roomId));
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
+    // 채팅방의 유저 가져오기
     @GetMapping("/{roomId}/users")
-    public List<ResponseUserInfoDto> getRoomUsers(@PathVariable Long roomId) {
-        return roomService.getRoomUsers(roomId);
+    public ResponseEntity<SuccessResponse<List<ResponseUserInfoDto>>> getRoomUsers(@PathVariable Long roomId) {
+        List<ResponseUserInfoDto> users = roomService.getRoomUsers(roomId);
+        SuccessResponse<List<ResponseUserInfoDto>> response = new SuccessResponse<>(users);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
-
-
 }

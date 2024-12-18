@@ -44,7 +44,7 @@ public class RoomService {
         return room;
     }
 
-    public void joinRoom(String token, Long roomId) {
+    public String joinRoom(String token, Long roomId) {
         User user = userService.getUser(token);
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found with id: " + roomId));
@@ -58,6 +58,8 @@ public class RoomService {
 
         userRepository.save(user);
         roomRepository.save(room);
+
+        return "성공적인 방 가입";
     }
 
 
