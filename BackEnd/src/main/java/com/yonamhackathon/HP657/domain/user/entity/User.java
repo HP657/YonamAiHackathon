@@ -1,6 +1,7 @@
 package com.yonamhackathon.HP657.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yonamhackathon.HP657.domain.chat.entity.Message;
 import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.post.entity.Post;
 import jakarta.persistence.*;
@@ -49,10 +50,15 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    private List<Message> messages;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Post> posts;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JsonIgnore
     private Grade grade;
 
     @Override
