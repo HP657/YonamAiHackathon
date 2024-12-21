@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class RequestCreateRoomDto {
     private String roomName;
-    private String discription;
+    private String description;
 
 }

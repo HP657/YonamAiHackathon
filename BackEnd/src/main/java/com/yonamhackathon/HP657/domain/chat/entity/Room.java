@@ -1,6 +1,7 @@
 package com.yonamhackathon.HP657.domain.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yonamhackathon.HP657.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Room {
     private String name;
 
     @Column(nullable = false)
-    private String discription;
+    private String description;
 
     @ManyToMany
     @JoinTable(
@@ -34,5 +35,9 @@ public class Room {
     )
     @JsonBackReference
     private List<User> users = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Message> messages = new ArrayList<>();
 
 }
