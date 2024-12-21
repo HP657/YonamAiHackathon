@@ -9,6 +9,7 @@ import Header from './Header';
 import { useEffect, useState } from 'react';
 import API from '../services/api';
 import PostPage from '../pages/PostPage';
+import RoomPage from '../pages/RoomPage';
 
 export default function Contents() {
   const [userInfo, setUserInfo] = useState(null);
@@ -39,6 +40,7 @@ export default function Contents() {
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/mentoring-study' element={<MentoringStudyPage />} />
           <Route path='/posts' element={<PostPage />} />
+          <Route path='room' element={<RoomPage />} />
         </Routes>
       </main>
       {userInfo && <Footer />}
