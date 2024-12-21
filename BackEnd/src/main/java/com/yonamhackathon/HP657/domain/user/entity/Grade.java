@@ -1,5 +1,6 @@
 package com.yonamhackathon.HP657.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -25,5 +26,6 @@ public class Grade {
     private long count;
 
     @OneToOne(mappedBy = "grade")
+    @JsonIgnore
     private User user;
 }
