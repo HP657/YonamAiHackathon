@@ -1,20 +1,23 @@
 package com.yonamhackathon.HP657.domain.chat.controller;
 
-import com.yonamhackathon.HP657.global.common.ApiPath;
+import com.yonamhackathon.HP657.domain.chat.dto.RequestMessageDto;
+import com.yonamhackathon.HP657.domain.chat.entity.Message;
+import com.yonamhackathon.HP657.domain.chat.serivce.MessageService;
 import com.yonamhackathon.HP657.global.common.DefaultController;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
-@RequestMapping(ApiPath.CHAT_API_PATH)
-public class ChatController extends DefaultController {
+@RequiredArgsConstructor
+public class ChatController {
+    private final MessageService messageService;
 
     @MessageMapping("/sendMessage/{roomId}")
     @SendTo("/topic/room/{roomId}/messages")
-    public String sendMessage(String message, @DestinationVariable String roomId) {
-        return message;
+    public Message sendMessage(@Payload RequestMessageDto dto, @DestinationVariable Long roomId, @Header("Authorization") String token) {
+        token = token.substring(7);
+        return messageService.saveMessage(dto, roomId, token);
     }
 }
