@@ -32,7 +32,7 @@ public class RoomService {
         User user = userService.getUser(token);
         Room room = new Room();
         room.setName(dto.getRoomName());
-        room.setDiscription(dto.getDiscription());
+        room.setDescription(dto.getDescription());
         room = roomRepository.save(room);
 
         user.getRooms().add(room);
