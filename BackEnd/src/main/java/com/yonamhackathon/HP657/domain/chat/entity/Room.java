@@ -2,6 +2,7 @@ package com.yonamhackathon.HP657.domain.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -39,5 +40,10 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Message> messages = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
 
 }
