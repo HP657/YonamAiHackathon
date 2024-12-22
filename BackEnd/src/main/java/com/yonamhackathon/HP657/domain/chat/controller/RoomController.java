@@ -1,7 +1,10 @@
 package com.yonamhackathon.HP657.domain.chat.controller;
 
 import com.yonamhackathon.HP657.domain.chat.dto.RequestCreateRoomDto;
+import com.yonamhackathon.HP657.domain.chat.dto.ResponseCreateRoomDto;
+import com.yonamhackathon.HP657.domain.chat.dto.ResponseSendJoinRequestDto;
 import com.yonamhackathon.HP657.domain.chat.entity.Room;
+import com.yonamhackathon.HP657.domain.chat.entity.RoomRequest;
 import com.yonamhackathon.HP657.domain.chat.service.RoomService;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.global.common.ApiPath;
@@ -40,10 +43,10 @@ public class RoomController extends DefaultController {
 
     // 채팅방 생성
     @PostMapping("/create")
-    public ResponseEntity<SuccessResponse<Room>> createRoom(@RequestBody RequestCreateRoomDto dto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<ResponseCreateRoomDto>> createRoom(@RequestBody RequestCreateRoomDto dto, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        Room room = roomService.createRoom(dto, token);
-        SuccessResponse<Room> response = new SuccessResponse<>(room);
+        ResponseCreateRoomDto room = roomService.createRoom(dto, token);
+        SuccessResponse<ResponseCreateRoomDto> response = new SuccessResponse<>(room);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
@@ -61,5 +64,52 @@ public class RoomController extends DefaultController {
         List<ResponseUserInfoDto> users = roomService.getRoomUsers(roomId);
         SuccessResponse<List<ResponseUserInfoDto>> response = new SuccessResponse<>(users);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
+    }
+
+    @PostMapping("/{roomId}/request")
+    public ResponseEntity<SuccessResponse<ResponseSendJoinRequestDto>> sendJoinRequest(
+            @PathVariable Long roomId,
+            @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        ResponseSendJoinRequestDto request = roomService.roomRequest(roomId, token);
+        SuccessResponse<ResponseSendJoinRequestDto> response = new SuccessResponse<>(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    // 방장: 요청 승인
+    @PostMapping("/request/{requestId}/approve")
+    public ResponseEntity<SuccessResponse<String>> approveRequest(
+            @PathVariable Long requestId) {
+        roomService.approveRoomRequest(requestId);
+        SuccessResponse<String> response = new SuccessResponse<>("승인");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 방장: 요청 거절
+    @PostMapping("/request/{requestId}/reject")
+    public ResponseEntity<SuccessResponse<String>> rejectRequest(
+            @PathVariable Long requestId) {
+        roomService.rejectRoomRequest(requestId);
+        SuccessResponse<String> response = new SuccessResponse<>("승인 거절");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{roomId}/requests/pending")
+    public ResponseEntity<SuccessResponse<List<RoomRequest>>> getPendingRequests(
+            @PathVariable Long roomId) {
+        List<RoomRequest> pendingRequests = roomService.getPendingRequestsForRoom(roomId);
+        SuccessResponse<List<RoomRequest>> response = new SuccessResponse<>(pendingRequests);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 유저가 보낸 요청 상태 확인
+    @GetMapping("/{roomId}/request/status")
+    public ResponseEntity<SuccessResponse<RoomRequest>> checkRequestStatus(
+            @PathVariable Long roomId,
+            @RequestHeader("Authorization") String token) {
+        token = token.substring(7);
+        RoomRequest requestStatus = roomService.checkRequestStatus(roomId, token);
+        SuccessResponse<RoomRequest> response = new SuccessResponse<>(requestStatus);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
