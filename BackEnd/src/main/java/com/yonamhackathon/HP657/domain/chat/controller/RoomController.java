@@ -26,7 +26,7 @@ public class RoomController extends DefaultController {
     public ResponseEntity<SuccessResponse<List<Room>>> getRooms() {
         List<Room> rooms = roomService.getAllRooms();
         SuccessResponse<List<Room>> response = new SuccessResponse<>(rooms);
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     // 유저가 가입한 채팅방 가져오기
@@ -35,7 +35,7 @@ public class RoomController extends DefaultController {
         token = token.substring(7);
         List<Room> userRooms = roomService.getUserRooms(token);
         SuccessResponse<List<Room>> response = new SuccessResponse<>(userRooms);
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     // 채팅방 생성
@@ -52,7 +52,7 @@ public class RoomController extends DefaultController {
     public ResponseEntity<SuccessResponse<String>> joinRoom(@PathVariable Long roomId, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
         SuccessResponse<String> response = new SuccessResponse<>(roomService.joinRoom(token, roomId));
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     // 채팅방의 유저 가져오기
@@ -60,6 +60,6 @@ public class RoomController extends DefaultController {
     public ResponseEntity<SuccessResponse<List<ResponseUserInfoDto>>> getRoomUsers(@PathVariable Long roomId) {
         List<ResponseUserInfoDto> users = roomService.getRoomUsers(roomId);
         SuccessResponse<List<ResponseUserInfoDto>> response = new SuccessResponse<>(users);
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 }

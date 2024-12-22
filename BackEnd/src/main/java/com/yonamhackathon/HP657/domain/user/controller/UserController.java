@@ -33,7 +33,7 @@ public class UserController extends DefaultController {
         token = token.substring(7);
         ResponseGradeDto dto = userService.getUserGrade(token);
         SuccessResponse<ResponseGradeDto> response = new SuccessResponse<>(dto);
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse<ResponseRegisterUserDto>> registerUser(@Valid @RequestBody RequestRegisterUserDto registerUserDto) {
@@ -48,14 +48,14 @@ public class UserController extends DefaultController {
         ResponseCreateJwtDto dto = jwtService.createJwt(createJwtDto);
         SuccessResponse<ResponseCreateJwtDto> response = new SuccessResponse<>(dto);
 
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     @GetMapping("/info")
     public ResponseEntity<SuccessResponse<ResponseUserInfoDto>> getUserInfo(@Valid @RequestHeader("Authorization") String token) {
         token = token.substring(7);
         SuccessResponse<ResponseUserInfoDto> response = new SuccessResponse<>(userService.getUserInfo(token));
-        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping("/email/send")
