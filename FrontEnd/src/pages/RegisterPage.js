@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
-import PropTypes from 'prop-types';
 
-export default function RegisterPage({ user }) {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -14,12 +13,6 @@ export default function RegisterPage({ user }) {
   const [error, setError] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, []);
 
   const handleEmailVerification = async () => {
     if (!email) {
@@ -257,7 +250,3 @@ export default function RegisterPage({ user }) {
     </div>
   );
 }
-
-RegisterPage.propTypes = {
-  user: PropTypes.bool.isRequired,
-};

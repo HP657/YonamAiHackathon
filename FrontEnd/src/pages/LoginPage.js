@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import API from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-export default function LoginPage({ user }) {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  // 사용자가 이미 로그인되어 있으면 메인 페이지로 리다이렉션
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

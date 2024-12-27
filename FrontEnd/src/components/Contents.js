@@ -2,32 +2,20 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import MainPage from '../pages/MainPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
-import PropTypes from 'prop-types';
 import MentoringStudyPage from '../pages/MentoringStudyPage';
 import Footer from './Footer';
 import Header from './Header';
 import { useEffect, useState } from 'react';
-import API from '../services/api';
 import PostPage from '../pages/PostPage';
 import RoomPage from '../pages/RoomPage';
+import CheckToken from './TokenCheck';
 
 export default function Contents() {
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState(true);
   const location = useLocation();
 
-  const fetchUserData = async () => {
-    try {
-      const response = await API('/api/token/check', 'GET', null, true);
-      setUserInfo(response.data);
-      console.log(response);
-    } catch (error) {
-      console.error('API 호출 중 에러 발생:', error);
-      setUserInfo(false);
-    }
-  };
-
   useEffect(() => {
-    fetchUserData();
+    setUserInfo(CheckToken());
   }, [location]);
 
   return (
@@ -47,7 +35,3 @@ export default function Contents() {
     </>
   );
 }
-
-Contents.propTypes = {
-  user: PropTypes.bool.isRequired,
-};

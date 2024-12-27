@@ -13,13 +13,6 @@ export default function Header() {
         <img src='/assets/logo.png' alt='Logo' className='h-10' />
         <h1 className='font-bold text-2xl ml-3'>BondLink</h1>
       </button>
-
-      <button
-        aria-label='Open Menu'
-        className='bg-transparent border-none p-0 cursor-pointer'
-      >
-        <img src='/assets/hamburger.png' alt='Hamburger Menu' className='h-7' />
-      </button>
     </header>
   );
 }
