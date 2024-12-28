@@ -1,39 +1,44 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Rooms from '../components/Rooms';
 
 export default function MentoringStudyPage() {
   const [rooms, setRooms] = useState([]);
 
   useEffect(() => {
-    // Simulate fetching data from an API or JSON file
     const fetchRooms = async () => {
       const roomData = [
         {
           id: 1,
-          name: 'JavaScript Study Group',
-          description: 'A group for learning and discussing JavaScript.',
+          title: 'JavaScript Study Group',
+          description: 'Learn JavaScript together.',
+          leader: 'Alice Johnson',
+          topic: 'JavaScript',
         },
         {
           id: 2,
-          name: 'React Mentorship',
-          description: 'Mentorship sessions for React beginners.',
+          title: 'React Mentorship',
+          description: 'Mentorship for React beginners.',
+          leader: 'Bob Smith',
+          topic: 'React',
         },
         {
           id: 3,
-          name: 'Python Data Science',
+          title: 'Python Data Science',
           description: 'Exploring data science concepts using Python.',
+          leader: 'Charlie Brown',
+          topic: 'Python',
         },
       ];
 
-      // Simulate a delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Update the state with the fetched data
+      console.log('Fetched rooms:', roomData);
       setRooms(roomData);
     };
 
     fetchRooms();
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []);
 
   return (
     <div className='max-w-md mx-auto p-6 border border-gray-300 rounded-lg bg-white'>
@@ -52,12 +57,7 @@ export default function MentoringStudyPage() {
         <div className='room-list'>
           <h3 className='text-xl font-semibold mb-2'>룸 목록</h3>
           <ul className='list-none p-0'>
-            {rooms.map((room) => (
-              <li key={room.id} className='p-2 border-b border-gray-200'>
-                <strong className='block text-lg'>{room.name}</strong>
-                <span>{room.description}</span>
-              </li>
-            ))}
+            <Rooms rooms={rooms} />
           </ul>
         </div>
       ) : (

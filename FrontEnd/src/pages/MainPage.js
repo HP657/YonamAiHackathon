@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Posts from '../components/Posts';
+import Rooms from '../components/Rooms';
 
 export default function HomePage() {
   const [joinedRooms, setJoinedRooms] = useState([]);
@@ -9,13 +11,17 @@ export default function HomePage() {
       const rooms = [
         {
           id: 1,
-          name: 'JavaScript Study Group',
+          title: 'JavaScript Study Group',
           description: 'Learn JavaScript together.',
+          leader: 'Alice Johnson',
+          topic: 'JavaScript',
         },
         {
           id: 2,
-          name: 'React Mentorship',
+          title: 'React Mentorship',
           description: 'Mentorship for React beginners.',
+          leader: 'Bob Smith',
+          topic: 'React',
         },
       ];
       setJoinedRooms(rooms);
@@ -23,8 +29,20 @@ export default function HomePage() {
 
     const fetchRecentPosts = async () => {
       const posts = [
-        { id: 1, title: 'Understanding Closures in JavaScript', roomId: 1 },
-        { id: 2, title: 'React Hooks: A Comprehensive Guide', roomId: 2 },
+        {
+          id: 1,
+          title: 'Understanding Closures in JavaScript',
+          description: 'A deep dive into closures in JavaScript.',
+          author: 'John Doe',
+          date: '2024-12-27',
+        },
+        {
+          id: 2,
+          title: 'React Hooks: A Comprehensive Guide',
+          description: 'Everything you need to know about React Hooks.',
+          author: 'Jane Smith',
+          date: '2023-10-02',
+        },
       ];
       setRecentPosts(posts);
     };
@@ -39,25 +57,12 @@ export default function HomePage() {
 
       <section className='mb-6'>
         <h3 className='text-xl font-semibold mb-2'>가입한 룸</h3>
-        <ul className='list-none p-0'>
-          {joinedRooms.map((room) => (
-            <li key={room.id} className='p-2 border-b border-gray-200'>
-              <strong className='block text-lg'>{room.name}</strong>
-              <span>{room.description}</span>
-            </li>
-          ))}
-        </ul>
+        <Rooms rooms={joinedRooms} />
       </section>
 
       <section>
         <h3 className='text-xl font-semibold mb-2'>최근 게시물</h3>
-        <ul className='list-none p-0'>
-          {recentPosts.map((post) => (
-            <li key={post.id} className='p-2 border-b border-gray-200'>
-              <strong className='block text-lg'>{post.title}</strong>
-            </li>
-          ))}
-        </ul>
+        <Posts posts={recentPosts} />
       </section>
     </div>
   );

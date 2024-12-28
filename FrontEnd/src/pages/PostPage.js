@@ -1,46 +1,48 @@
+import Posts from '../components/Posts';
+
 export default function PostListPage() {
   const posts = [
     {
       id: 1,
-      title: '게시물 제목 1',
-      author: '홍길동',
+      title: 'Understanding Closures in JavaScript',
+      description: 'A deep dive into closures in JavaScript.',
+      author: 'John Doe',
       date: '2023-10-01',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
     {
       id: 2,
-      title: '게시물 제목 2',
-      author: '이몽룡',
+      title: 'React Hooks: A Comprehensive Guide',
+      description: 'Everything you need to know about React Hooks.',
+      author: 'Jane Smith',
       date: '2023-10-02',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
     {
       id: 3,
-      title: '게시물 제목 3',
-      author: '성춘향',
+      title: 'JavaScript Fundamentals',
+      description: 'A comprehensive overview of JavaScript basics.',
+      author: 'Bob Johnson',
       date: '2023-10-03',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
     {
       id: 4,
-      title: '게시물 제목 4',
-      author: '장길산',
+      title: 'Advanced React Concepts',
+      description: 'Exploring advanced topics in React.',
+      author: 'Alice Brown',
       date: '2023-10-04',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
     {
       id: 5,
-      title: '게시물 제목 5',
-      author: '임꺽정',
+      title: 'Web Development Trends',
+      description: 'The latest trends and innovations in web development.',
+      author: 'Charlie Davis',
       date: '2023-10-05',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
     {
       id: 6,
-      title: '게시물 제목 6',
-      author: '박문수',
+      title: 'Frontend Security Best Practices',
+      description: 'Securing your frontend applications with best practices.',
+      author: 'Emily Taylor',
       date: '2023-10-06',
-      summary: '게시물의 간단한 요약이나 설명이 여기에 들어갑니다.',
     },
   ];
 
@@ -48,15 +50,7 @@ export default function PostListPage() {
     <div className='max-w-2xl mx-auto p-4'>
       <h1 className='text-3xl font-bold mb-6'>게시물 목록</h1>
       <ul>
-        {posts.map((post) => (
-          <li key={post.id} className='mb-4 border-b pb-4'>
-            <h2 className='text-2xl font-semibold'>{post.title}</h2>
-            <p className='text-sm text-gray-500'>
-              작성자: {post.author} | 날짜: {post.date}
-            </p>
-            <p className='text-gray-700 mt-2'>{post.summary}</p>
-          </li>
-        ))}
+        <Posts posts={posts} />
       </ul>
     </div>
   );

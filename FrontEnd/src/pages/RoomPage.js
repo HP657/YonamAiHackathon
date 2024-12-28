@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Stomp } from '@stomp/stompjs';
+import PropTypes from 'prop-types';
 
-const RoomPage = () => {
+export default function RoomPage({ roomId }) {
   const [stompClient, setStompClient] = useState(null);
   const [messages, setMessages] = useState([]);
   const [messageText, setMessageText] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const token = localStorage.getItem('accessToken');
-  const roomId = 1;
 
   const connectToWebSocket = () => {
     if (isConnected) return;
@@ -60,7 +60,7 @@ const RoomPage = () => {
   };
 
   return (
-    <div className='font-sans p-6'>
+    <div className='max-w-lg mx-auto'>
       <div>
         <h2>Room {roomId}</h2>
         <button
@@ -92,6 +92,8 @@ const RoomPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default RoomPage;
+RoomPage.propTypes = {
+  roomId: PropTypes.number.isRequired,
+};
