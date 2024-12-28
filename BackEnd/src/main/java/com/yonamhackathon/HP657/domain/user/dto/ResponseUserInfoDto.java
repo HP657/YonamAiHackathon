@@ -11,7 +11,8 @@ public class ResponseUserInfoDto {
     private String email;
     private String username;
     private int studentId;
-    private Double GPA;
+    private Double gpa;
+    private int gpa_count;
 
     public static ResponseUserInfoDto fromEntity(User user) {
         return ResponseUserInfoDto.builder()
@@ -19,7 +20,8 @@ public class ResponseUserInfoDto {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .studentId(user.getStudentId())
-                .GPA(user.getGPA())
+                .gpa(user.getGpa())
+                .gpa_count(user.getGpa_count())
                 .build();
     }
 }

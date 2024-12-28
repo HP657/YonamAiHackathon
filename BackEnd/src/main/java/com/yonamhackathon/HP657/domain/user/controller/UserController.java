@@ -7,8 +7,10 @@ import com.yonamhackathon.HP657.domain.mail.dto.RequestSendEmailDto;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestVerificationCodeDto;
 import com.yonamhackathon.HP657.domain.mail.service.MailService;
 import com.yonamhackathon.HP657.domain.user.dto.RequestRegisterUserDto;
+import com.yonamhackathon.HP657.domain.user.dto.RequestUpdateGpaDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
+import com.yonamhackathon.HP657.domain.user.entity.User;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
 import com.yonamhackathon.HP657.global.common.ApiPath;
 import com.yonamhackathon.HP657.global.common.DefaultController;
@@ -28,10 +30,9 @@ public class UserController extends DefaultController {
     private final JwtService jwtService;
 
     @GetMapping("/grade")
-    public ResponseEntity<SuccessResponse<ResponseGradeDto>> getUserGpa(@RequestHeader("Authorization") String token) {
-        token = token.substring(7);
-        ResponseGradeDto dto = userService.getUserGrade(token);
-        SuccessResponse<ResponseGradeDto> response = new SuccessResponse<>(dto);
+    public ResponseEntity<SuccessResponse<User>> getUserGpa(RequestUpdateGpaDto updateGpaDto) {
+        User dto = userService.setGPA(updateGpaDto);
+        SuccessResponse<User> response = new SuccessResponse<>(dto);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
     @PostMapping("/register")

@@ -24,7 +24,8 @@ public class RequestRegisterUserDto {
                 .username(username)
                 .password(password)
                 .studentId(studentId)
-                .GPA(3.5)
+                .gpa(3.5)
+                .gpa_count(1)
                 .build();
     }
 

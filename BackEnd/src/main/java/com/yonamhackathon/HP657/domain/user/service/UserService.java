@@ -1,5 +1,6 @@
 package com.yonamhackathon.HP657.domain.user.service;
 
+import com.yonamhackathon.HP657.domain.user.dto.RequestUpdateGpaDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.entity.Role;
@@ -53,6 +54,17 @@ public class UserService {
         } else {
             throw new RuntimeException("User not found");
         }
+    }
+
+    public User setGPA(RequestUpdateGpaDto dto) {
+        User user = userRepository.findById(dto.getUserId()).get();
+        int currentGpaCount = user.getGpa_count();
+        double totalGrade = user.getGpa() * currentGpaCount + dto.getGrade();
+        int updatedGpaCount = currentGpaCount + 1;
+
+        user.setGpa(totalGrade / updatedGpaCount);
+        user.setGpa_count(updatedGpaCount);
+        return userRepository.save(user);
     }
 
 

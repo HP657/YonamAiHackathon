@@ -45,7 +45,10 @@ public class User implements UserDetails {
     private Role role;
 
     @Column(nullable = false)
-    private Double GPA;
+    private Double gpa;
+
+    @Column(nullable = false)
+    private int gpa_count;
 
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
