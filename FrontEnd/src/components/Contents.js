@@ -9,9 +9,11 @@ import { useEffect, useState } from 'react';
 import PostPage from '../pages/PostPage';
 import RoomPage from '../pages/RoomPage';
 import CheckToken from './TokenCheck';
+import InfoPage from '../pages/InfoPage';
+import PostDetailPage from '../pages/PostDetailPage';
 
 export default function Contents() {
-  const [userInfo, setUserInfo] = useState(true);
+  const [userInfo, setUserInfo] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -21,14 +23,16 @@ export default function Contents() {
   return (
     <>
       {userInfo && <Header />}
-      <main className='flex-1 overflow-y-auto p-4 no-scrollbar'>
+      <main className='flex-1 overflow-y-auto no-scrollbar'>
         <Routes>
           <Route path='/' element={<MainPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/register' element={<RegisterPage />} />
           <Route path='/mentoring-study' element={<MentoringStudyPage />} />
           <Route path='/posts' element={<PostPage />} />
-          <Route path='room' element={<RoomPage />} />
+          <Route path='/post/:postId' element={<PostDetailPage />} />
+          <Route path='/room/:roomId' element={<RoomPage />} />
+          <Route path='/info' element={<InfoPage />} />
         </Routes>
       </main>
       {userInfo && <Footer />}
