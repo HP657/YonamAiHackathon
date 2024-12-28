@@ -25,6 +25,9 @@ public class Post {
     @Column(nullable = false)
     private String contents;
 
+    @Column(unique = true)
+    private String postImgUrl;
+
     @Column(nullable = false)
     private String author;
 

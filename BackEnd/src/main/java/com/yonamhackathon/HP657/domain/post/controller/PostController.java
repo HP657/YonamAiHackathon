@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping(ApiPath.POST_API_PATH)
 @RequiredArgsConstructor
@@ -19,11 +21,16 @@ public class PostController extends DefaultController {
     private final PostService postService;
 
     @PostMapping("/create")
-    public ResponseEntity<SuccessResponse<Post>> createPost(@Valid @RequestBody RequestCreatePostDto dto, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<Post>> createPost(@Valid @RequestBody RequestCreatePostDto dto, @RequestHeader("Authorization") String token) throws IOException {
         token = token.substring(7);
         Post post = postService.createPost(dto, token);
         SuccessResponse<Post> response = new SuccessResponse<>(post);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<SuccessResponse<Boolean>> postDelete(@PathVariable("postId") Long postId) {
+        SuccessResponse<Boolean> response = new SuccessResponse<>(postService.postDelete(postId));
+        return  new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
+    }
 }
