@@ -9,13 +9,6 @@ export default function Footer() {
           <span className='text-xs font-bold'>HOME</span>
         </Link>
         <Link
-          to='/mentoring-study'
-          className='flex flex-col items-center hover:no-underline'
-        >
-          <img src='/assets/lens.png' alt='Room' className='h-6' />
-          <span className='text-xs font-bold'>ROOM</span>
-        </Link>
-        <Link
           to='/posts'
           className='flex flex-col items-center hover:no-underline'
         >
@@ -23,7 +16,14 @@ export default function Footer() {
           <span className='text-xs font-bold'>POST</span>
         </Link>
         <Link
-          to='/posts'
+          to='/mentoring-study'
+          className='flex flex-col items-center hover:no-underline'
+        >
+          <img src='/assets/lens.png' alt='Room' className='h-6' />
+          <span className='text-xs font-bold'>ROOM</span>
+        </Link>
+        <Link
+          to='/info'
           className='flex flex-col items-center hover:no-underline'
         >
           <img src='/assets/person.png' alt='My Info' className='h-6' />
