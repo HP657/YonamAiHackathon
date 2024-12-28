@@ -11,6 +11,7 @@ import RoomPage from '../pages/RoomPage';
 import CheckToken from './TokenCheck';
 import InfoPage from '../pages/InfoPage';
 import PostDetailPage from '../pages/PostDetailPage';
+import MakeRoomPage from '../pages/MakeRoomPage';
 
 export default function Contents() {
   const [userInfo, setUserInfo] = useState(false);
@@ -33,6 +34,7 @@ export default function Contents() {
           <Route path='/post/:postId' element={<PostDetailPage />} />
           <Route path='/room/:roomId' element={<RoomPage />} />
           <Route path='/info' element={<InfoPage />} />
+          <Route path='/add_post' element={<MakeRoomPage />} />
         </Routes>
       </main>
       {userInfo && <Footer />}
