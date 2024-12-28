@@ -6,7 +6,6 @@ import com.yonamhackathon.HP657.domain.jwt.service.JwtService;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestSendEmailDto;
 import com.yonamhackathon.HP657.domain.mail.dto.RequestVerificationCodeDto;
 import com.yonamhackathon.HP657.domain.mail.service.MailService;
-import com.yonamhackathon.HP657.domain.user.dto.ResponseGradeDto;
 import com.yonamhackathon.HP657.domain.user.dto.RequestRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;

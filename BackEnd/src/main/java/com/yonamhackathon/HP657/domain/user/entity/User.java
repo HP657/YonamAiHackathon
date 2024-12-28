@@ -44,6 +44,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(nullable = false)
+    private Double GPA;
+
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
     private List<Room> rooms;
@@ -55,11 +58,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Post> posts;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "email", referencedColumnName = "email", insertable = false, updatable = false)
-    @JsonIgnore
-    private Grade grade;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
