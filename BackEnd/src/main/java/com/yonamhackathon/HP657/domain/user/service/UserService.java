@@ -1,6 +1,8 @@
 package com.yonamhackathon.HP657.domain.user.service;
 
-import com.yonamhackathon.HP657.domain.user.dto.RequestUpdateGpaDto;
+import com.yonamhackathon.HP657.domain.AI.dto.RequestEmotionDto;
+import com.yonamhackathon.HP657.domain.AI.dto.ResponseEmotionDto;
+import com.yonamhackathon.HP657.domain.AI.service.AIService;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseRegisterUserDto;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.entity.Role;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final AIService aiService;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -56,10 +59,10 @@ public class UserService {
         }
     }
 
-    public User setGPA(RequestUpdateGpaDto dto) {
-        User user = userRepository.findById(dto.getUserId()).get();
+    public User setGPA(ResponseEmotionDto dto, String email) {
+        User user = userRepository.findByEmail(email).get();
         int currentGpaCount = user.getGpa_count();
-        double totalGrade = user.getGpa() * currentGpaCount + dto.getGrade();
+        double totalGrade = user.getGpa() * currentGpaCount + dto.getScore();
         int updatedGpaCount = currentGpaCount + 1;
 
         user.setGpa(totalGrade / updatedGpaCount);
