@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Posts from '../components/Posts';
-import Rooms from '../components/Rooms';
+import Rooms from '../components/Rooms_User';
 
 export default function HomePage() {
   const [joinedRooms, setJoinedRooms] = useState([]);
