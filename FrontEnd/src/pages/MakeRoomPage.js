@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as nsfwjs from 'nsfwjs';
 
 export default function MakeRoomPage() {
-  const [predictions, setPredictions] = useState([]);
   const [model, setModel] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [author, setAuthor] = useState('');
+  const [image, setImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const imgRef = useRef(null);
 
   useEffect(() => {
-    // Load the model once when the component mounts
     const loadModel = async () => {
       const loadedModel = await nsfwjs.load();
       setModel(loadedModel);
@@ -17,32 +18,49 @@ export default function MakeRoomPage() {
     loadModel();
   }, []);
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
-    const imgElement = document.getElementById('img');
-    imgElement.src = URL.createObjectURL(file);
-    // Add an onload event to classify the image once it's fully loaded
-    imgElement.onload = async () => {
-      if (model) {
-        const predictions = await model.classify(imgElement);
-        console.log('Predictions: ', predictions);
-        setPredictions(predictions);
-      }
-    };
+    if (file) {
+      const imgElement = imgRef.current;
+      imgElement.src = URL.createObjectURL(file);
+      setImage(file);
+
+      imgElement.onload = async () => {
+        if (model) {
+          const predictions = await model.classify(imgElement);
+          const inappropriateCategories = ['Hentai', 'Porn', 'Sexy'];
+
+          const isInappropriate = inappropriateCategories.includes(
+            predictions[0].className
+          );
+          if (isInappropriate) {
+            setErrorMessage(
+              '이 이미지는 허용되지 않는 내용을 포함하고 있습니다. 안전한 이미지를 업로드해 주세요.'
+            );
+            setImage(null);
+            imgElement.src = '';
+          } else {
+            setErrorMessage('');
+          }
+        }
+      };
+    } else {
+      setImage(null);
+      imgRef.current.src = '';
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Here you can handle the submission of the title, description, and author
     console.log('Title:', title);
     console.log('Description:', description);
     console.log('Author:', author);
-    // You can also handle the image and predictions as needed
+    console.log('Img', image);
   };
 
   return (
     <div className='max-w-md mx-auto p-4'>
-      <form onSubmit={handleSubmit} className='space-y-4'>
+      <form onSubmit={handleSubmit}>
         <input
           type='text'
           placeholder='Title'
@@ -70,10 +88,17 @@ export default function MakeRoomPage() {
           type='file'
           accept='image/*'
           onChange={handleImageUpload}
-          required
           className='w-full p-2 border border-gray-300 rounded'
         />
-        <img id='img' alt='Uploaded' className='w-full h-auto mt-2' />
+        <img
+          ref={imgRef}
+          alt='Uploaded'
+          className='w-full h-auto mt-2'
+          style={{ display: image ? 'block' : 'none' }}
+        />
+
+        {errorMessage && <p className='text-red-500 mt-2'>{errorMessage}</p>}
+
         <button
           type='submit'
           className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
@@ -81,16 +106,6 @@ export default function MakeRoomPage() {
           Submit
         </button>
       </form>
-      <div className='mt-4'>
-        <h3 className='text-lg font-semibold'>Predictions:</h3>
-        <ul className='list-disc pl-5'>
-          {predictions.map((prediction, index) => (
-            <li key={index}>
-              {prediction.className}: {prediction.probability.toFixed(4)}
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
