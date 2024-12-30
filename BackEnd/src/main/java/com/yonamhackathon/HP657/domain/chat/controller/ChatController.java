@@ -2,12 +2,10 @@ package com.yonamhackathon.HP657.domain.chat.controller;
 
 import com.yonamhackathon.HP657.domain.chat.dto.RequestMessageDto;
 import com.yonamhackathon.HP657.domain.chat.entity.Message;
-import com.yonamhackathon.HP657.domain.chat.serivce.MessageService;
-import com.yonamhackathon.HP657.global.common.DefaultController;
+import com.yonamhackathon.HP657.domain.chat.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 @RequiredArgsConstructor
