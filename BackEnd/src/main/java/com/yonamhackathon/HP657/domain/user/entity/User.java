@@ -2,7 +2,6 @@ package com.yonamhackathon.HP657.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yonamhackathon.HP657.domain.chat.entity.Message;
-import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.post.entity.Post;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -11,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,9 +50,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private int gpa_count;
 
-    @ManyToMany(mappedBy = "users")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Room> rooms;
+    private List<UserRoom> userRooms;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

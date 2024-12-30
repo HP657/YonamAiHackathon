@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.entity.User;
+import com.yonamhackathon.HP657.domain.user.entity.UserRoom;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,22 +29,16 @@ public class Room {
     @Column(nullable = false)
     private String description;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_room",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    @JsonBackReference
-    private List<User> users = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserRoom> userRooms;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Message> messages = new ArrayList<>();
+    private List<Message> messages;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
-
 
 }

@@ -2,8 +2,8 @@ package com.yonamhackathon.HP657.domain.chat.controller;
 
 import com.yonamhackathon.HP657.domain.chat.dto.RequestCreateRoomDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseCreateRoomDto;
+import com.yonamhackathon.HP657.domain.chat.dto.ResponseRoomsDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseSendJoinRequestDto;
-import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.chat.entity.RoomRequest;
 import com.yonamhackathon.HP657.domain.chat.service.RoomService;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
@@ -24,24 +24,21 @@ public class RoomController extends DefaultController {
 
     private final RoomService roomService;
 
-    // 모든 채팅방 가져오기
     @GetMapping("/all")
-    public ResponseEntity<SuccessResponse<List<Room>>> getRooms() {
-        List<Room> rooms = roomService.getAllRooms();
-        SuccessResponse<List<Room>> response = new SuccessResponse<>(rooms);
+    public ResponseEntity<SuccessResponse<List<ResponseRoomsDto>>> getRooms() {
+        List<ResponseRoomsDto> rooms = roomService.getAllRooms();
+        SuccessResponse<List<ResponseRoomsDto>> response = new SuccessResponse<>(rooms);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
-    // 유저가 가입한 채팅방 가져오기
     @GetMapping("/user/rooms")
-    public ResponseEntity<SuccessResponse<List<Room>>> getUserRooms(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<SuccessResponse<List<ResponseRoomsDto>>> getUserRooms(@RequestHeader("Authorization") String token) {
         token = token.substring(7);
-        List<Room> userRooms = roomService.getUserRooms(token);
-        SuccessResponse<List<Room>> response = new SuccessResponse<>(userRooms);
+        List<ResponseRoomsDto> userRooms = roomService.getUserRooms(token);
+        SuccessResponse<List<ResponseRoomsDto>> response = new SuccessResponse<>(userRooms);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
-    // 채팅방 생성
     @PostMapping("/create")
     public ResponseEntity<SuccessResponse<ResponseCreateRoomDto>> createRoom(@RequestBody RequestCreateRoomDto dto, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
@@ -50,7 +47,6 @@ public class RoomController extends DefaultController {
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
     }
 
-    // 채팅방에 유저 가입
     @PostMapping("/{roomId}/join")
     public ResponseEntity<SuccessResponse<String>> joinRoom(@PathVariable Long roomId, @RequestHeader("Authorization") String token) {
         token = token.substring(7);
@@ -58,7 +54,6 @@ public class RoomController extends DefaultController {
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
-    // 채팅방의 유저 가져오기
     @GetMapping("/{roomId}/users")
     public ResponseEntity<SuccessResponse<List<ResponseUserInfoDto>>> getRoomUsers(@PathVariable Long roomId) {
         List<ResponseUserInfoDto> users = roomService.getRoomUsers(roomId);
@@ -76,7 +71,6 @@ public class RoomController extends DefaultController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // 방장: 요청 승인
     @PostMapping("/request/{requestId}/approve")
     public ResponseEntity<SuccessResponse<String>> approveRequest(
             @PathVariable Long requestId) {
@@ -85,7 +79,6 @@ public class RoomController extends DefaultController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 방장: 요청 거절
     @PostMapping("/request/{requestId}/reject")
     public ResponseEntity<SuccessResponse<String>> rejectRequest(
             @PathVariable Long requestId) {
@@ -102,7 +95,6 @@ public class RoomController extends DefaultController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 유저가 보낸 요청 상태 확인
     @GetMapping("/{roomId}/request/status")
     public ResponseEntity<SuccessResponse<RoomRequest>> checkRequestStatus(
             @PathVariable Long roomId,
