@@ -1,4 +1,4 @@
-package com.yonamhackathon.HP657.domain.chat.serivce;
+package com.yonamhackathon.HP657.domain.chat.service;
 
 import com.yonamhackathon.HP657.domain.chat.dto.RequestMessageDto;
 import com.yonamhackathon.HP657.domain.chat.entity.Message;
@@ -6,13 +6,11 @@ import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.chat.repository.MessageRepository;
 import com.yonamhackathon.HP657.domain.chat.repository.RoomRepository;
 import com.yonamhackathon.HP657.domain.user.entity.User;
-import com.yonamhackathon.HP657.domain.user.repository.UserRepository;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

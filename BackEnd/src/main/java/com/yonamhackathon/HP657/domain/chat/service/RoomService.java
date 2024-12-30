@@ -2,6 +2,7 @@ package com.yonamhackathon.HP657.domain.chat.service;
 
 import com.yonamhackathon.HP657.domain.chat.dto.RequestCreateRoomDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseCreateRoomDto;
+import com.yonamhackathon.HP657.domain.chat.dto.ResponseRoomsDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseSendJoinRequestDto;
 import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.chat.entity.RoomRequest;
@@ -9,13 +10,15 @@ import com.yonamhackathon.HP657.domain.chat.repository.RoomRepository;
 import com.yonamhackathon.HP657.domain.chat.repository.RoomRequestRepository;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
 import com.yonamhackathon.HP657.domain.user.entity.User;
-import com.yonamhackathon.HP657.domain.user.repository.UserRepository;
+import com.yonamhackathon.HP657.domain.user.entity.UserRoom;
+import com.yonamhackathon.HP657.domain.user.repository.UserRoomRepository;
 import com.yonamhackathon.HP657.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,16 +26,22 @@ public class RoomService {
     private final UserService userService;
     private final RoomRepository roomRepository;
     private final RoomRequestRepository roomRequestRepository;
-    private final UserRepository userRepository;
+    private final UserRoomRepository userRoomRepository;
 
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+    public List<ResponseRoomsDto> getAllRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        return rooms.stream()
+                .map(ResponseRoomsDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    public List<Room> getUserRooms(String token) {
+    public List<ResponseRoomsDto> getUserRooms(String token) {
         User user = userService.getUser(token);
-        return user.getRooms();
+        return userRoomRepository.findByUser(user).stream()
+                .map(userRoom -> ResponseRoomsDto.fromEntity(userRoom.getRoom()))
+                .collect(Collectors.toList());
     }
+
 
     public ResponseCreateRoomDto createRoom(RequestCreateRoomDto dto, String token) {
         User user = userService.getUser(token);
@@ -42,43 +51,40 @@ public class RoomService {
         room.setDescription(dto.getDescription());
         room.setOwner(user);
 
-        user.getRooms().add(room);
-        room.getUsers().add(user);
-
         Room savedRoom = roomRepository.save(room);
+
+        UserRoom userRoom = new UserRoom();
+        userRoom.setUser(user);
+        userRoom.setRoom(savedRoom);
+        userRoomRepository.save(userRoom);
 
         ResponseUserInfoDto ownerDto = ResponseUserInfoDto.fromEntity(user);
         return new ResponseCreateRoomDto(savedRoom.getRoomId(), savedRoom.getName(), savedRoom.getDescription(), ownerDto);
     }
-
 
     public String joinRoom(String token, Long roomId) {
         User user = userService.getUser(token);
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found with id: " + roomId));
 
-        if (user.getRooms().contains(room)) {
+        if (userRoomRepository.existsByUserAndRoom(user, room)) {
             throw new RuntimeException("User already joined this room.");
         }
 
-        user.getRooms().add(room);
-        room.getUsers().add(user);
-
-        userRepository.save(user);
-        roomRepository.save(room);
+        UserRoom userRoom = new UserRoom();
+        userRoom.setUser(user);
+        userRoom.setRoom(room);
+        userRoomRepository.save(userRoom);
 
         return "성공적인 방 가입";
     }
-
-
 
     public List<ResponseUserInfoDto> getRoomUsers(Long roomId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found with id: " + roomId));
 
-        return room.getUsers()
-                .stream()
-                .map(ResponseUserInfoDto::fromEntity)
+        return userRoomRepository.findByRoom(room).stream()
+                .map(userRoom -> ResponseUserInfoDto.fromEntity(userRoom.getUser())) // Extract User from UserRoom
                 .toList();
     }
 
@@ -101,7 +107,6 @@ public class RoomService {
         return ResponseSendJoinRequestDto.fromEntity(savedRoomRequest);
     }
 
-
     public void approveRoomRequest(Long requestId) {
         RoomRequest roomRequest = roomRequestRepository.findById(requestId)
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
@@ -109,11 +114,10 @@ public class RoomService {
         Room room = roomRequest.getRoom();
         User user = roomRequest.getUser();
 
-        room.getUsers().add(user);
-        user.getRooms().add(room);
-
-        roomRepository.save(room);
-        userRepository.save(user);
+        UserRoom userRoom = new UserRoom();
+        userRoom.setUser(user);
+        userRoom.setRoom(room);
+        userRoomRepository.save(userRoom);
 
         roomRequestRepository.delete(roomRequest);
     }
@@ -124,7 +128,6 @@ public class RoomService {
 
         roomRequestRepository.delete(roomRequest);
     }
-
 
     public RoomRequest checkRequestStatus(Long roomId, String token) {
         User user = userService.getUser(token);
