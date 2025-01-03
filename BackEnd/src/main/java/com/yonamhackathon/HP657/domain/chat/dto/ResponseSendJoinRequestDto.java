@@ -21,7 +21,7 @@ public class ResponseSendJoinRequestDto {
 
     public static ResponseSendJoinRequestDto fromEntity(RoomRequest roomRequest) {
         return ResponseSendJoinRequestDto.builder()
-                .id(roomRequest.getId())
+                .id(roomRequest.getRequestId())
                 .room(ResponseCreateRoomDto.builder()
                         .roomId(roomRequest.getRoom().getRoomId())
                         .name(roomRequest.getRoom().getName())

@@ -1,5 +1,6 @@
 package com.yonamhackathon.HP657.domain.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yonamhackathon.HP657.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,10 +17,11 @@ public class RoomRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long requestId;
 
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
+    @JsonIgnore
     private Room room;
 
     @ManyToOne

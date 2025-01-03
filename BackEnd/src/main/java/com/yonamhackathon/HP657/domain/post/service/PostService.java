@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +38,11 @@ public class PostService {
         return postRepository.save(post);
     }
 
+    public Post viewDetailPost(Long postId) {
+        Post post = postRepository.findByPostId(postId).get();
+        return post;
+    }
+
     public boolean postDelete(Long postId) {
         Optional<Post> post = postRepository.findByPostId(postId);
         if (post.isPresent()) {
@@ -45,5 +51,14 @@ public class PostService {
             return gcpService.deleteImage(imageUrl);
         }
         return false;
+    }
+
+    public List<Post> viewAllPost() {
+        return postRepository.findAll();
+    }
+
+    public List<Post> userPost(String token) {
+        User user = userService.getUser(token);
+        return postRepository.findByUser(user);
     }
 }

@@ -10,5 +10,6 @@ import java.util.List;
 public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
     List<UserRoom> findByUser(User user); // For finding rooms by user
     boolean existsByUserAndRoom(User user, Room room); // For checking user-room existence
-    List<UserRoom> findByRoom(Room room); // For finding users by room
+    List<UserRoom> findByRoom(Room room);
+    List<UserRoom> findByRoom_RoomId(Long roomId);
 }
