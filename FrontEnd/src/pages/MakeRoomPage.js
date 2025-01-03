@@ -1,61 +1,42 @@
-import React, { useState, useEffect, useRef } from 'react';
-import * as nsfwjs from 'nsfwjs';
+import React, { useEffect, useState } from 'react';
+import API from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import CheckToken from '../components/TokenCheck';
 
 export default function MakeRoomPage() {
-  const [model, setModel] = useState(null);
-  const [title, setTitle] = useState('');
+  const [roomName, setRoomName] = useState('');
   const [description, setDescription] = useState('');
-  const [author, setAuthor] = useState('');
-  const [image, setImage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
-  const imgRef = useRef(null);
+  const [topic, setTopic] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadModel = async () => {
-      const loadedModel = await nsfwjs.load();
-      setModel(loadedModel);
+    const tokencheck = async () => {
+      const isValidToken = await CheckToken();
+      if (!isValidToken) {
+        navigate('/login');
+        return;
+      }
     };
-    loadModel();
-  }, []);
+    tokencheck();
+  }, [navigate]);
 
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const imgElement = imgRef.current;
-      imgElement.src = URL.createObjectURL(file);
-      setImage(file);
-
-      imgElement.onload = async () => {
-        if (model) {
-          const predictions = await model.classify(imgElement);
-          const inappropriateCategories = ['Hentai', 'Porn', 'Sexy'];
-
-          const isInappropriate = inappropriateCategories.includes(
-            predictions[0].className
-          );
-          if (isInappropriate) {
-            setErrorMessage(
-              '이 이미지는 허용되지 않는 내용을 포함하고 있습니다. 안전한 이미지를 업로드해 주세요.'
-            );
-            setImage(null);
-            imgElement.src = '';
-          } else {
-            setErrorMessage('');
-          }
-        }
-      };
-    } else {
-      setImage(null);
-      imgRef.current.src = '';
-    }
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Title:', title);
-    console.log('Description:', description);
-    console.log('Author:', author);
-    console.log('Img', image);
+
+    const response = await API(
+      '/api/room/create',
+      'POST',
+      { roomName, description, topic },
+      true
+    );
+
+    if (response && response.data) {
+      alert('룸이 생성되었습니다.');
+      navigate('/mentoring-study');
+    } else {
+      console.error('Failed to create room:', response);
+      alert('룸 생성에 실패했습니다. 다시 시도해 주세요.');
+    }
   };
 
   return (
@@ -63,9 +44,9 @@ export default function MakeRoomPage() {
       <form onSubmit={handleSubmit}>
         <input
           type='text'
-          placeholder='Title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          placeholder='Room Name'
+          value={roomName}
+          onChange={(e) => setRoomName(e.target.value)}
           required
           className='w-full p-2 border border-gray-300 rounded'
         />
@@ -78,26 +59,12 @@ export default function MakeRoomPage() {
         />
         <input
           type='text'
-          placeholder='Author'
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
+          placeholder='Topic'
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
           required
           className='w-full p-2 border border-gray-300 rounded'
         />
-        <input
-          type='file'
-          accept='image/*'
-          onChange={handleImageUpload}
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <img
-          ref={imgRef}
-          alt='Uploaded'
-          className='w-full h-auto mt-2'
-          style={{ display: image ? 'block' : 'none' }}
-        />
-
-        {errorMessage && <p className='text-red-500 mt-2'>{errorMessage}</p>}
 
         <button
           type='submit'
