@@ -13,6 +13,7 @@ public class ResponseRoomsDto {
     private String name;
     private String description;
     private ResponseUserInfoDto owner;
+    private String topic;
 
     public static ResponseRoomsDto fromEntity(Room room) {
         return ResponseRoomsDto.builder()
@@ -20,6 +21,7 @@ public class ResponseRoomsDto {
                 .name(room.getName())
                 .description(room.getDescription())
                 .owner(ResponseUserInfoDto.fromEntity(room.getOwner()))
+                .topic(room.getTopic())
                 .build();
     }
 }

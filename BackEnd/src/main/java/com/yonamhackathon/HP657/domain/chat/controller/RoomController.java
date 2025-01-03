@@ -4,6 +4,7 @@ import com.yonamhackathon.HP657.domain.chat.dto.RequestCreateRoomDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseCreateRoomDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseRoomsDto;
 import com.yonamhackathon.HP657.domain.chat.dto.ResponseSendJoinRequestDto;
+import com.yonamhackathon.HP657.domain.chat.entity.Room;
 import com.yonamhackathon.HP657.domain.chat.entity.RoomRequest;
 import com.yonamhackathon.HP657.domain.chat.service.RoomService;
 import com.yonamhackathon.HP657.domain.user.dto.ResponseUserInfoDto;
@@ -45,6 +46,12 @@ public class RoomController extends DefaultController {
         ResponseCreateRoomDto room = roomService.createRoom(dto, token);
         SuccessResponse<ResponseCreateRoomDto> response = new SuccessResponse<>(room);
         return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<SuccessResponse<ResponseRoomsDto>> roomInfo(@PathVariable Long roomId) {
+        SuccessResponse<ResponseRoomsDto> response = new SuccessResponse<>(roomService.roomInfo(roomId));
+        return new ResponseEntity<>(response, createHttpHeaders(), HttpStatus.OK);
     }
 
     @PostMapping("/{roomId}/join")
@@ -102,6 +109,13 @@ public class RoomController extends DefaultController {
         token = token.substring(7);
         RoomRequest requestStatus = roomService.checkRequestStatus(roomId, token);
         SuccessResponse<RoomRequest> response = new SuccessResponse<>(requestStatus);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/{roomId}/room/remove")
+    public ResponseEntity<SuccessResponse<String>> finishRoom(@PathVariable Long roomId) {
+        String mention = roomService.deleteRoomIfGpaUpdated(roomId);
+        SuccessResponse<String> response = new SuccessResponse<>(mention);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
