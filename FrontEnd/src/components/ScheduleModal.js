@@ -1,27 +1,41 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import API from '../services/api';
 
-export default function ScheduleModal({ isOpen, onClose }) {
+export default function ScheduleModal({
+  roomId,
+  isOpen,
+  onClose,
+  onScheduleUpdated,
+}) {
   const [meetingTitle, setMeetingTitle] = useState('');
-  const [meetingDescription, setMeetingDescription] = useState('');
   const [meetingDate, setMeetingDate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
 
   if (!isOpen) return null;
 
-  const handleSchedule = () => {
-    console.log('Scheduled Meeting:', {
-      title: meetingTitle,
-      description: meetingDescription,
-      date: meetingDate,
-      time: meetingTime,
-    });
+  const handleSchedule = async () => {
+    try {
+      const response = await API(
+        `/api/schedules/room/${roomId}`,
+        'POST',
+        {
+          title: meetingTitle,
+          date: meetingDate,
+          time: meetingTime,
+        },
+        true
+      );
 
-    setMeetingTitle('');
-    setMeetingDescription('');
-    setMeetingDate('');
-    setMeetingTime('');
-    onClose();
+      const newSchedule = response.data.data;
+      onScheduleUpdated(newSchedule);
+      setMeetingTitle('');
+      setMeetingDate('');
+      setMeetingTime('');
+      onClose();
+    } catch (error) {
+      console.error('Error scheduling meeting:', error);
+    }
   };
 
   return (
@@ -39,18 +53,6 @@ export default function ScheduleModal({ isOpen, onClose }) {
             onChange={(e) => setMeetingTitle(e.target.value)}
             className='border border-gray-300 rounded p-2 w-full'
             placeholder='Enter meeting title'
-          />
-        </div>
-        <div className='mb-4'>
-          <label htmlFor='meetingDescription' className='block mb-1'>
-            Description
-          </label>
-          <textarea
-            id='meetingDescription'
-            value={meetingDescription}
-            onChange={(e) => setMeetingDescription(e.target.value)}
-            className='border border-gray-300 rounded p-2 w-full'
-            placeholder='Enter meeting description'
           />
         </div>
         <div className='mb-4'>
@@ -95,6 +97,8 @@ export default function ScheduleModal({ isOpen, onClose }) {
 }
 
 ScheduleModal.propTypes = {
+  roomId: PropTypes.number.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onScheduleUpdated: PropTypes.func.isRequired,
 };
