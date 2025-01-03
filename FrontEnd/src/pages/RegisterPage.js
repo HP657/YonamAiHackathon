@@ -26,7 +26,7 @@ export default function RegisterPage() {
       { email },
       false
     );
-    console.log(response);
+
     setIsEmailSent(true);
     if (response.status === 200) {
       setError('');
@@ -47,7 +47,7 @@ export default function RegisterPage() {
       { email, code: verificationCode },
       false
     );
-    console.log(response);
+
     if (response.status === 200) {
       setIsVerified(true);
       setError('');
@@ -96,7 +96,7 @@ export default function RegisterPage() {
       registerFormData,
       false
     );
-    console.log(response);
+
     if (response.data.status === 200) {
       navigate('/login');
     } else {
