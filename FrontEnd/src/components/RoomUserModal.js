@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import API from '../services/api';
 
 export default function RoomUserModal({ isOpen, onClose, usersInfo }) {
   const [selectedUser, setSelectedUser] = useState('');
@@ -14,8 +15,16 @@ export default function RoomUserModal({ isOpen, onClose, usersInfo }) {
     setEvaluation(user ? user.evaluation || '' : '');
   };
 
-  const handleSubmit = () => {
-    console.log('Evaluation submitted for:', selectedUser, evaluation);
+  const handleSubmit = async () => {
+    await API(
+      '/api/ai/analyze',
+      'POST',
+      {
+        email: selectedUser,
+        sentence: evaluation,
+      },
+      true
+    );
     setSelectedUser('');
     setEvaluation('');
     onClose();
@@ -40,7 +49,7 @@ export default function RoomUserModal({ isOpen, onClose, usersInfo }) {
           </option>
           {usersInfo.map((user, index) => (
             <option key={index} value={user.email}>
-              {user.name}
+              {user.username}
             </option>
           ))}
         </select>
