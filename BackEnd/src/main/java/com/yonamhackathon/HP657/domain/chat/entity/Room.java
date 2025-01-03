@@ -29,6 +29,9 @@ public class Room {
     @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private String topic;
+
     @JsonIgnore
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRoom> userRooms;

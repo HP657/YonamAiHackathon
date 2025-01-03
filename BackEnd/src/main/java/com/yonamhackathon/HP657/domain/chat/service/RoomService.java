@@ -42,6 +42,9 @@ public class RoomService {
                 .collect(Collectors.toList());
     }
 
+    public ResponseRoomsDto roomInfo(Long roomId) {
+        return ResponseRoomsDto.fromEntity(roomRepository.findByRoomId(roomId));
+    }
 
     public ResponseCreateRoomDto createRoom(RequestCreateRoomDto dto, String token) {
         User user = userService.getUser(token);
@@ -49,6 +52,7 @@ public class RoomService {
         Room room = new Room();
         room.setName(dto.getRoomName());
         room.setDescription(dto.getDescription());
+        room.setTopic(dto.getTopic());
         room.setOwner(user);
 
         Room savedRoom = roomRepository.save(room);
@@ -143,5 +147,18 @@ public class RoomService {
                 .orElseThrow(() -> new IllegalArgumentException("Room not found"));
 
         return roomRequestRepository.findByRoom(room);
+    }
+
+    public String deleteRoomIfGpaUpdated(Long roomId) {
+        List<UserRoom> userRooms = userRoomRepository.findByRoom_RoomId(roomId);
+
+        boolean allGpaUpdated = userRooms.stream()
+                .allMatch(UserRoom::isGpaUpdated);
+
+        if (allGpaUpdated) {
+            roomRepository.deleteById(roomId);
+            return "모든 평가를 마쳤기에 룸이 삭제되었습니다.";
+        }
+        return "";
     }
 }
