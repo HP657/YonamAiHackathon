@@ -12,13 +12,18 @@ import CheckToken from './TokenCheck';
 import InfoPage from '../pages/InfoPage';
 import PostDetailPage from '../pages/PostDetailPage';
 import MakeRoomPage from '../pages/MakeRoomPage';
+import MakePostPage from '../pages/MakePostPage';
 
 export default function Contents() {
   const [userInfo, setUserInfo] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    setUserInfo(CheckToken());
+    const checkTokenAsync = async () => {
+      const response = await CheckToken();
+      setUserInfo(response);
+    };
+    checkTokenAsync();
   }, [location]);
 
   return (
@@ -34,7 +39,8 @@ export default function Contents() {
           <Route path='/post/:postId' element={<PostDetailPage />} />
           <Route path='/room/:roomId' element={<RoomPage />} />
           <Route path='/info' element={<InfoPage />} />
-          <Route path='/add_post' element={<MakeRoomPage />} />
+          <Route path='/post/add' element={<MakePostPage />} />
+          <Route path='/room/add' element={<MakeRoomPage />} />
         </Routes>
       </main>
       {userInfo && <Footer />}
