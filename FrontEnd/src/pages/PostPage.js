@@ -33,12 +33,12 @@ export default function PostListPage() {
 
   return (
     <div className='max-w-2xl mx-auto p-4'>
-      <h1 className='text-3xl font-bold mb-4 flex justify-between items-center'>
+      <h2 className='text-2xl font-bold mb-4 flex justify-between items-center'>
         <span>게시물 목록</span>
-        <Link to='/post/add' className='text-black text-xl'>
+        <Link to='/post/add' className='text-black text-lg'>
           작성하기
         </Link>
-      </h1>
+      </h2>
       <ul>
         <Posts posts={posts} />
       </ul>

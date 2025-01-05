@@ -40,37 +40,66 @@ export default function MakeRoomPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-4'>
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          placeholder='Room Name'
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <textarea
-          placeholder='Description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <input
-          type='text'
-          placeholder='Topic'
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-
+    <div className='min-h-screen bg-gray-50 p-8'>
+      <h1 className='text-3xl font-bold text-center mb-8 text-blue-600'>
+        룸 만들기
+      </h1>
+      <form onSubmit={handleSubmit} className='max-w-2xl mx-auto space-y-6'>
+        <div>
+          <label
+            htmlFor='roomName'
+            className='block text-gray-700 font-medium mb-2'
+          >
+            룸 이름
+          </label>
+          <input
+            id='roomName'
+            type='text'
+            placeholder='룸 이름을 입력하세요'
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
+        <div>
+          <label
+            htmlFor='description'
+            className='block text-gray-700 font-medium mb-2'
+          >
+            설명
+          </label>
+          <textarea
+            id='description'
+            placeholder='룸에 대한 설명을 작성하세요'
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
+        <div>
+          <label
+            htmlFor='topic'
+            className='block text-gray-700 font-medium mb-2'
+          >
+            주제
+          </label>
+          <input
+            id='topic'
+            type='text'
+            placeholder='룸의 주제를 입력하세요'
+            value={topic}
+            onChange={(e) => setTopic(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
         <button
           type='submit'
-          className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
+          className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 transition'
         >
-          Submit
+          생성하기
         </button>
       </form>
     </div>

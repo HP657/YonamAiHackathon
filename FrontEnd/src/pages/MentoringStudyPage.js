@@ -64,7 +64,7 @@ export default function MentoringStudyPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-6 border border-gray-300 rounded-lg bg-white'>
+    <div className='max-w-md mx-auto p-6 bg-white'>
       <h2 className='text-2xl font-bold mb-4'>멘토링 & 스터디 룸</h2>
 
       <div className='mb-4'>

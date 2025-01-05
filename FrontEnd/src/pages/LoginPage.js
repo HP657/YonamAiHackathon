@@ -33,7 +33,6 @@ export default function LoginPage() {
         loginFormData,
         false
       );
-
       const token = response?.data?.data?.token;
       if (token) {
         localStorage.setItem('accessToken', token);

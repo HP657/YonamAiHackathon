@@ -78,51 +78,79 @@ export default function MakePostPage() {
   };
 
   return (
-    <div className='max-w-md mx-auto p-4'>
-      <form onSubmit={handleSubmit}>
-        <input
-          type='text'
-          placeholder='Title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <textarea
-          placeholder='Description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <input
-          type='text'
-          placeholder='Author'
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          required
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <input
-          type='file'
-          accept='image/*'
-          onChange={handleImageUpload}
-          className='w-full p-2 border border-gray-300 rounded'
-        />
-        <img
-          ref={imgRef}
-          alt='Uploaded'
-          className='w-full h-auto mt-2'
-          style={{ display: image ? 'block' : 'none' }}
-        />
-
-        {errorMessage && <p className='text-red-500 mt-2'>{errorMessage}</p>}
-
+    <div className='min-h-screen bg-gray-50 p-6'>
+      <h1 className='text-2xl font-bold text-center mb-6 text-blue-600'>
+        게시물 만들기
+      </h1>
+      <form onSubmit={handleSubmit} className='space-y-4 max-w-2xl mx-auto'>
+        <div>
+          <label htmlFor='title' className='block text-gray-700 font-medium'>
+            제목
+          </label>
+          <input
+            id='title'
+            type='text'
+            placeholder='제목을 입력하세요'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
+        <div>
+          <label
+            htmlFor='description'
+            className='block text-gray-700 font-medium'
+          >
+            내용
+          </label>
+          <textarea
+            id='description'
+            placeholder='내용을 입력하세요'
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
+        <div>
+          <label htmlFor='author' className='block text-gray-700 font-medium'>
+            작성자
+          </label>
+          <input
+            id='author'
+            type='text'
+            placeholder='작성자를 입력하세요'
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            required
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none'
+          />
+        </div>
+        <div>
+          <label htmlFor='file' className='block text-gray-700 font-medium'>
+            이미지 업로드
+          </label>
+          <input
+            id='file'
+            type='file'
+            accept='image/*'
+            onChange={handleImageUpload}
+            className='w-full px-4 py-2 border rounded-md shadow-sm focus:outline-none'
+          />
+          <img
+            ref={imgRef}
+            alt='Uploaded'
+            className='w-full h-auto mt-4'
+            style={{ display: image ? 'block' : 'none' }}
+          />
+          {errorMessage && <p className='text-red-500 mt-2'>{errorMessage}</p>}
+        </div>
         <button
           type='submit'
-          className='w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600'
+          className='w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition'
         >
-          Submit
+          등록하기
         </button>
       </form>
     </div>
