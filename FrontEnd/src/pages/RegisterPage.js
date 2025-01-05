@@ -71,10 +71,11 @@ export default function RegisterPage() {
       return;
     }
 
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email)) {
-      if (!email.endsWith('@st.yc.ac.kr'))
-        setError('유효한 이메일을 입력해주세요.');
+    const currentYear = new Date().getFullYear() - 2000;
+    const studentIdInt = parseInt(studentId, 10);
+
+    if (isNaN(studentIdInt) || studentIdInt < 0 || studentIdInt > currentYear) {
+      setError(`존재 할 수 없는 학번입니다.`);
       return;
     }
 
