@@ -9,11 +9,15 @@ export default function Posts({ posts }) {
     return postDate >= oneWeekAgo;
   };
 
+  const sortedPosts = [...posts].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   return (
     <>
-      {posts && posts.length > 0 ? (
+      {sortedPosts && sortedPosts.length > 0 ? (
         <ul>
-          {posts.map((post, index) => (
+          {sortedPosts.map((post, index) => (
             <li key={post.postId}>
               <Link to={`/post/${post.postId}`}>
                 <h3 className='text-xl font-semibold flex items-center'>
@@ -43,7 +47,7 @@ export default function Posts({ posts }) {
                   </span>
                 </div>
               </Link>
-              {index < posts.length - 1 && (
+              {index < sortedPosts.length - 1 && (
                 <hr className='my-4 border-gray-300' />
               )}
             </li>
