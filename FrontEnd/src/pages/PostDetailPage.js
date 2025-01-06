@@ -44,6 +44,15 @@ export default function PostDetailPage() {
         </span>
       </div>
       <p className='text-gray-700'>{post.contents}</p>
+      {post.postImgUrl && (
+        <div className='mt-4'>
+          <img
+            src={post.postImgUrl}
+            alt='Post content'
+            className='w-full h-auto rounded-md'
+          />
+        </div>
+      )}
     </div>
   );
 }
