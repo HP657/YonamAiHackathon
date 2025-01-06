@@ -100,16 +100,22 @@ export default function RoomPage() {
       () => {
         setIsConnected(true);
 
-        client.subscribe(
-          `/topic/room/${roomId}/messages`,
-          { Authorization: `Bearer ${token}` },
-          (messageOutput) => {
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              JSON.parse(messageOutput.body),
-            ]);
+        client.subscribe(`/topic/room/${roomId}/messages`, (messageOutput) => {
+          try {
+            const message = JSON.parse(messageOutput.body);
+
+            setMessages((prevMessages) => {
+              if (
+                !prevMessages.find((msg) => msg.messageId === message.messageId)
+              ) {
+                return [...prevMessages, message];
+              }
+              return prevMessages;
+            });
+          } catch (error) {
+            console.error('메시지 파싱 오류:', error);
           }
-        );
+        });
 
         client.subscribe(
           `/topic/room/${roomId}/schedules`,
@@ -120,7 +126,7 @@ export default function RoomPage() {
         setStompClient(client);
       },
       (error) => {
-        console.error('WebSocket connection error:', error);
+        console.error('WebSocket 연결 오류:', error);
       }
     );
   };
@@ -134,8 +140,6 @@ export default function RoomPage() {
       user: { username: `${myInfo.username}` },
       content: messageText,
     };
-
-    setMessages((prevMessages) => [...prevMessages, message]);
 
     stompClient.send(
       `/app/sendMessage/${roomId}`,
@@ -176,14 +180,25 @@ export default function RoomPage() {
   );
 
   const renderMessages = () => (
-    <div className='flex-1 overflow-y-auto border border-gray-300 rounded-lg p-4 mb-4 max-h-96 no-scrollbar'>
+    <div
+      className='flex-1 border border-gray-300 rounded-lg p-4 mb-4 no-scrollbar'
+      style={{ minHeight: '24rem', maxHeight: '24rem', overflowY: 'auto' }}
+    >
       <div className='messages'>
-        {messages.map((msg, index) => (
-          <div key={index} className='message mb-2'>
-            <strong>{msg.user?.username || msg.room?.owner?.username}:</strong>{' '}
-            {msg.content}
+        {messages.length > 0 ? (
+          messages.map((msg, index) => (
+            <div key={index} className='message mb-2'>
+              <strong>
+                {msg.user?.username || msg.room?.owner?.username}:
+              </strong>{' '}
+              {msg.content}
+            </div>
+          ))
+        ) : (
+          <div className='text-gray-500 text-center mt-4'>
+            아직 메시지가 없습니다.
           </div>
-        ))}
+        )}
       </div>
     </div>
   );
